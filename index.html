@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atividade Interativa - Alimentação Saudável</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(to bottom, #fff0f5, #ffffff);
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    header {
+      background-color: #ff99cc;
+      color: white;
+      text-align: center;
+      padding: 1em;
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 1em;
+    }
+    .campo-nome {
+      margin: 1em 0;
+    }
+    input[type="text"] {
+      padding: 0.5em;
+      font-size: 1em;
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+    iframe, video {
+      width: 100%;
+      height: 500px;
+      border-radius: 15px;
+      border: none;
+    }
+    .cards, .drag-area, .drop-area {
+      margin-top: 1em;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 1em;
+    }
+    .card {
+      background-color: #fff;
+      border: 2px solid #ff66b2;
+      border-radius: 15px;
+      padding: 1em;
+      text-align: center;
+      font-size: 2em;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .card.matched {
+      background-color: #ccffcc;
+      cursor: default;
+    }
+    .draggable {
+      padding: 0.5em 1em;
+      background-color: #ffb3d9;
+      border-radius: 10px;
+      cursor: grab;
+    }
+    .dropzone {
+      border: 2px dashed #ff66b2;
+      border-radius: 10px;
+      min-width: 120px;
+      min-height: 60px;
+      padding: 1em;
+      text-align: center;
+      background-color: white;
+      font-weight: bold;
+    }
+    .drag-area, .drop-area {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1em;
+      padding: 1em;
+      background-color: #ffe6f0;
+      border-radius: 15px;
+    }
+  </style>
+</head>
+<body>
+  <header>E.B.M Vidal Ramos 🍎📚 Alimentação Saudável</header>
+  <div class="container">
+    <div class="campo-nome">
+      <label for="nome">Digite seu nome:</label>
+      <input type="text" id="nome" placeholder="Seu nome aqui...">
+    </div>
+
+    <h2>🎥 Assista ao vídeo educativo:</h2>
+    <iframe src="https://www.youtube.com/embed/rhwLCJz5kmY" allowfullscreen></iframe>
+
+    <h2>🧠 Jogo da Memória</h2>
+    <div class="cards" id="memoryCards"></div>
+
+    <h2>🍓 Arrastar e Soltar</h2>
+    <div class="drag-area" id="dragItems">
+      <div class="draggable" draggable="true" id="banana">🍌 Banana</div>
+      <div class="draggable" draggable="true" id="batatafrita">🍟 Batata Frita</div>
+      <div class="draggable" draggable="true" id="brocolis">🥦 Brócolis</div>
+      <div class="draggable" draggable="true" id="refrigerante">🥤 Refrigerante</div>
+      <div class="draggable" draggable="true" id="cenoura">🥕 Cenoura</div>
+      <div class="draggable" draggable="true" id="chocolate">🍫 Chocolate</div>
+      <div class="draggable" draggable="true" id="laranja">🍊 Laranja</div>
+      <div class="draggable" draggable="true" id="pizza">🍕 Pizza</div>
+    </div>
+    <div class="drop-area">
+      <div class="dropzone" id="saudavel">🥕 Saudável</div>
+      <div class="dropzone" id="nao-saudavel">🍬 Não Saudável</div>
+    </div>
+  </div>
+
+  <script>
+    const frutas = ['🍎','🍌','🍇','🍓','🍉','🍍','🍒','🥝'];
+    const deck = [...frutas, ...frutas];
+    let selecionadas = [];
+    function shuffle(a) { return a.sort(() => 0.5 - Math.random()); }
+    function criarCartas() {
+      shuffle(deck);
+      const area = document.getElementById('memoryCards');
+      area.innerHTML = '';
+      deck.forEach((emoji, i) => {
+        const c = document.createElement('div');
+        c.className = 'card';
+        c.innerText = '❓';
+        c.onclick = () => {
+          if (selecionadas.length < 2 && !c.classList.contains('matched')) {
+            c.innerText = emoji;
+            selecionadas.push({c, emoji});
+            if (selecionadas.length === 2) {
+              setTimeout(() => {
+                if (selecionadas[0].emoji === selecionadas[1].emoji) {
+                  selecionadas.forEach(x => x.c.classList.add('matched'));
+                } else {
+                  selecionadas.forEach(x => x.c.innerText = '❓');
+                }
+                selecionadas = [];
+              }, 800);
+            }
+          }
+        };
+        area.appendChild(c);
+      });
+    }
+    criarCartas();
+
+    document.querySelectorAll('.draggable').forEach(el => {
+      el.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text/plain', el.id);
+      });
+    });
+    document.querySelectorAll('.dropzone').forEach(zone => {
+      zone.addEventListener('dragover', e => e.preventDefault());
+      zone.addEventListener('drop', e => {
+        const id = e.dataTransfer.getData('text');
+        const el = document.getElementById(id);
+        if (el && !zone.contains(el)) {
+          zone.appendChild(el);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
