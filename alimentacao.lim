@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lim version="5.6.4">
+    <config>
+        <recursos>Recursos</recursos>
+        <idioma>4</idioma>
+        <licencia></licencia>
+        <corfondo>ffffff</corfondo>
+        <corbanda>80FFFF</corbanda>
+        <cornavega>80FF80</cornavega>
+        <cormensaxes>000000</cormensaxes>
+        <cortexto>000000</cortexto>
+        <titulo>Secretaria Municipal de Educação - SEMED</titulo>
+        <subtitulo>Profº Marcos - Informática Pedagógica</subtitulo>
+        <logo>logo.jpg</logo>
+        <informe>1</informe>
+        <botonson>1</botonson>
+        <maximizar>1</maximizar>
+        <desordenar>0</desordenar>
+        <correcto son="" modo="1" >Parabéns!</correcto>
+        <incorrecto son="" modo="1" >Tente Novamente</incorrecto>
+    </config>
+    <libro>
+        <paxina id="1" >
+              <tipo>2</tipo>
+              <imaxe posx="0" posy="0">CAPA.jpg</imaxe>
+        </paxina>
+        <paxina id="2" >
+              <tipo>16</tipo>
+              <cabeceira>Assista o Vídeo</cabeceira>
+              <externa dimx="800" dimy="600"><![CDATA[&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/rhwLCJz5kmY?si=-qTHZM6wTLbFaMF0&quot; title=&quot;YouTube video player&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share&quot; referrerpolicy=&quot;strict-origin-when-cross-origin&quot; allowfullscreen&gt;&lt;/iframe&gt;]]></externa>
+        </paxina>
+        <paxina id="3" >
+              <tipo>12</tipo>
+              <cabeceira>OBSERVE ALGUNS ALIMENTOS SAUDÁVEIS:</cabeceira>
+              <modo>1</modo>
+              <galeria grande="" son="" texto="ARROZ">ARROZ.jpg</galeria>
+              <galeria grande="" son="" texto="BANANA">banana.jpg</galeria>
+              <galeria grande="" son="" texto="BATATA">batata.jpg</galeria>
+              <galeria grande="" son="" texto="FEIJÃO">feijao.jpg</galeria>
+              <galeria grande="" son="" texto="MAÇÃ">maca.jpg</galeria>
+              <galeria grande="" son="" texto="MANDIOCA">MANDIOCA.jpg</galeria>
+        </paxina>
+        <paxina id="4" >
+              <tipo>12</tipo>
+              <cabeceira>OBSERVE ALGUNS ALIMENTOS SAUDÁVEIS:</cabeceira>
+              <modo>1</modo>
+              <galeria grande="" son="" texto="MEL">MEL.jpg</galeria>
+              <galeria grande="" son="" texto="MILHO">milho.jpg</galeria>
+              <galeria grande="" son="" texto="LEITE">LEITE.jpg</galeria>
+              <galeria grande="" son="" texto="OVO">OVOS.jpg</galeria>
+              <galeria grande="" son="" texto="UVA">uva.jpg</galeria>
+              <galeria grande="" son="" texto="CARNE">CARNE.jpg</galeria>
+        </paxina>
+        <paxina id="5" >
+              <tipo>12</tipo>
+              <cabeceira>OBSERVE ALGUNS ALIMENTOS NÃO - SAUDÁVEIS:</cabeceira>
+              <modo>1</modo>
+              <galeria grande="" son="" texto="SALGADINHOS">CHIPS.jpg</galeria>
+              <galeria grande="" son="" texto="DOCES">DOCES.jpg</galeria>
+              <galeria grande="" son="" texto="FRITURAS">BATATA_FRITA.jpg</galeria>
+              <galeria grande="" son="" texto="PIZZA">PIZZA.jpg</galeria>
+              <galeria grande="" son="" texto="REFRIGERANTES">REFRIGERENTE.jpg</galeria>
+              <galeria grande="" son="" texto="CARNE - EXCESSO">CARNE.jpg</galeria>
+        </paxina>
+        <paxina id="6" >
+              <tipo>11</tipo>
+              <cabeceira>COLOQUE CADA NOME EM SEU LUGAR CORRETO:</cabeceira>
+              <modo>3</modo>
+              <cousa nome="BANANA">banana.jpg</cousa>
+              <cousa nome="BATATA">batata.jpg</cousa>
+              <cousa nome="CARNE">CARNE.jpg</cousa>
+              <cousa nome="MAÇÃ">maca.jpg</cousa>
+              <cousa nome="MILHO">milho.jpg</cousa>
+        </paxina>
+        <paxina id="7" >
+              <tipo>11</tipo>
+              <cabeceira>COLOQUE CADA NOME EM SEU LUGAR CORRETO:</cabeceira>
+              <modo>3</modo>
+              <cousa nome="ARROZ">ARROZ.jpg</cousa>
+              <cousa nome="FEIJÃO">feijao.jpg</cousa>
+              <cousa nome="MEL">MEL.jpg</cousa>
+              <cousa nome="MAMÃO">mamao.jpg</cousa>
+              <cousa nome="MANDIOCA">MANDIOCA.jpg</cousa>
+        </paxina>
+        <paxina id="8" >
+              <tipo>7</tipo>
+              <cabeceira>CLASSIFIQUE COMFORME O TIPO DE ALIMENTO:</cabeceira>
+              <caixa1>SAUDÁVEL</caixa1>
+              <caixa2>FAZ MAL - SE COMER DEMAIS</caixa2>
+              <mini caixa="1">banana.jpg</mini>
+              <mini caixa="1">feijao.jpg</mini>
+              <mini caixa="1">maca.jpg</mini>
+              <mini caixa="2">CHIPS.jpg</mini>
+              <mini caixa="2">BATATA_FRITA.jpg</mini>
+              <mini caixa="2">REFRIGERENTE.jpg</mini>
+              <cfondo>FFFFFF</cfondo>
+        </paxina>
+        <paxina id="9" >
+              <tipo>7</tipo>
+              <cabeceira>CLASSIFIQUE COMFORME O TIPO DE ALIMENTO:</cabeceira>
+              <caixa1>SAUDÁVEL</caixa1>
+              <caixa2>FAZ MAL - SE COMER DEMAIS</caixa2>
+              <mini caixa="1">milho.jpg</mini>
+              <mini caixa="1">mamao.jpg</mini>
+              <mini caixa="1">macarrao.jpg</mini>
+              <mini caixa="2">PIZZA.jpg</mini>
+              <mini caixa="2">FRITURAS.jpg</mini>
+              <mini caixa="2">DOCES.jpg</mini>
+              <cfondo>FFFFFF</cfondo>
+        </paxina>
+        <paxina id="10" >
+              <tipo>17</tipo>
+              <cabeceira>JOGO DA MEMÓRIA:</cabeceira>
+              <parellas>banana.jpg</parellas>
+              <parellas>CARNE.jpg</parellas>
+              <parellas>ARROZ.jpg</parellas>
+              <parellas>batata.jpg</parellas>
+              <parellas>feijao.jpg</parellas>
+              <parellas>LEITE.jpg</parellas>
+              <cfondo>FFFFFF</cfondo>
+              <ctapa>FFFF80</ctapa>
+              <tempo>120</tempo>
+        </paxina>
+        <paxina id="11" >
+              <tipo>51</tipo>
+              <cabeceira>TREINANDO A MEMÓRIA:</cabeceira>
+              <valor>4</valor>
+              <peza imaxe="CARNE.jpg">1</peza>
+              <peza imaxe="ARROZ.jpg">2</peza>
+        </paxina>
+        <paxina id="12" >
+              <tipo>35</tipo>
+              <cabeceira>COLOQUE EM ORDEM ALFABÉTICA:</cabeceira>
+              <forma>0</forma>
+              <completa>ARROZ.jpg</completa>
+              <completa>banana.jpg</completa>
+              <completa>CARNE.jpg</completa>
+              <completa>DOCES.jpg</completa>
+              <completa>LEITE.jpg</completa>
+        </paxina>
+        <paxina id="13" >
+              <tipo>51</tipo>
+              <cabeceira>TREINANDO A MEMÓRIA:</cabeceira>
+              <valor>4</valor>
+              <peza imaxe="CHIPS.jpg">1</peza>
+              <peza imaxe="banana.jpg">2</peza>
+        </paxina>
+        <paxina id="14" >
+              <tipo>17</tipo>
+              <cabeceira>JOGO DA MEMÓRIA:</cabeceira>
+              <parellas>CHIPS.jpg</parellas>
+              <parellas>milho.jpg</parellas>
+              <parellas>MANDIOCA.jpg</parellas>
+              <parellas>feijao.jpg</parellas>
+              <parellas>OVOS.jpg</parellas>
+              <parellas>MEL.jpg</parellas>
+              <cfondo>FFFFFF</cfondo>
+              <ctapa>FFFF80</ctapa>
+        </paxina>
+        <paxina id="15" >
+              <tipo>16</tipo>
+              <cabeceira>Alimentação Saudável</cabeceira>
+              <externa dimx="1200" dimy="800"><![CDATA[&lt;iframe style=&quot;max-width:100%&quot; src=&quot;https://wordwall.net/pt/embed/5936e3ff4f7344839d7a862494bea022?themeId=27&amp;templateId=5&amp;fontStackId=15&quot; width=&quot;500&quot; height=&quot;380&quot; frameborder=&quot;0&quot; allowfullscreen&gt;&lt;/iframe&gt;]]></externa>
+        </paxina>
+        <paxina id="16" >
+              <tipo>16</tipo>
+              <cabeceira>Alimentação Saudável</cabeceira>
+              <externa dimx="1200" dimy="800"><![CDATA[&lt;iframe style=&quot;max-width:100%&quot; src=&quot;https://wordwall.net/pt/embed/7d7e299f32cc4a4dbdf2ca5e4e71a5a1?themeId=1&amp;templateId=2&amp;fontStackId=0&quot; width=&quot;500&quot; height=&quot;380&quot; frameborder=&quot;0&quot; allowfullscreen&gt;&lt;/iframe&gt;]]></externa>
+        </paxina>
+        <paxina id="17" >
+              <tipo>3</tipo>
+              <cabeceira>QUEBRA-CABEÇA:</cabeceira>
+              <imaxe>QUEBRA.jpg</imaxe>
+              <imfondo  trans="5">QUEBRA.jpg</imfondo>
+              <filas>4</filas>
+              <columnas>3</columnas>
+              <reixa>1</reixa>
+            <forma>1</forma>
+        </paxina>
+        <paxina id="18" >
+              <tipo>2</tipo>
+              <imaxe posx="0" posy="0">final.png</imaxe>
+        </paxina>
+    </libro>
+</lim>
