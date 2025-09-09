@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Animais Voadores — 3º ano</title>
+  <style>
+    :root {
+      --bg: #f8fafc; /* slate-50 */
+      --card: #ffffff;
+      --ink: #0f172a; /* slate-900 */
+      --muted: #475569; /* slate-600 */
+      --brand: #2563eb; /* blue-600 */
+      --brand-2: #1d4ed8; /* blue-700 */
+      --ok: #16a34a; /* green-600 */
+      --warn: #ea580c; /* orange-600 */
+      --error: #dc2626; /* red-600 */
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; color: var(--ink); background: linear-gradient(180deg, var(--bg), #eef2ff 80%); }
+    header { position: sticky; top: 0; z-index: 10; backdrop-filter: saturate(160%) blur(6px); background: rgba(255,255,255,.8); border-bottom: 1px solid #e2e8f0; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 20px; }
+    h1 { font-size: clamp(1.4rem, 1.1rem + 1.5vw, 2.2rem); margin: 8px 0 0; }
+    .sub { color: var(--muted); margin-top: 6px; }
+    nav { display: flex; gap: 8px; margin: 14px 0 8px; flex-wrap: wrap; }
+    nav button { appearance: none; border: 0; background: var(--brand); color: #fff; padding: 10px 14px; border-radius: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 6px 18px rgba(37,99,235,.25); }
+    nav button.secondary { background: #e2e8f0; color: #1f2937; box-shadow: none; }
+    nav button:hover { background: var(--brand-2); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    .card { background: var(--card); border: 1px solid #e5e7eb; border-radius: 18px; padding: 14px; box-shadow: 0 10px 28px rgba(2,6,23,.06); }
+    .card h3 { margin: 0 0 6px; font-size: 1.1rem; }
+    .card p { margin: 6px 0; }
+    .img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 12px; border: 1px solid #e5e7eb; }
+    .section { display: none; }
+    .section.active { display: block; }
+    .badge { display:inline-flex; align-items:center; gap:6px; padding:6px 10px; background:#eef2ff; color:#3730a3; border-radius:999px; font-size:.85rem; font-weight:700; }
+    .quiz { max-width: 820px; }
+    .q-card { background:#fff; border:1px solid #e5e7eb; border-radius:16px; padding:16px; box-shadow: 0 10px 28px rgba(2,6,23,.06); }
+    .q-title { font-size:1.05rem; margin:0 0 10px; }
+    .choices { display:grid; gap:10px; margin:10px 0; }
+    .choice { background:#f8fafc; border:1px solid #e5e7eb; border-radius:12px; padding:10px; cursor:pointer; }
+    .choice.correct { outline:3px solid var(--ok); }
+    .choice.wrong { outline:3px solid var(--error); }
+    .feedback { font-weight:700; margin-top:6px; }
+    .bar { height:10px; background:#e5e7eb; border-radius:999px; overflow:hidden; }
+    .bar > div { height:100%; width:0%; background:linear-gradient(90deg, #22c55e, #2563eb); transition: width .3s ease; }
+    footer { color:#475569; font-size:.9rem; margin-top:28px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="badge">🕊️🦇🦋 Animais voadores — 3º ano</div>
+      <h1>Identificar e reconhecer animais que voam: habitats, hábitos e alimentação</h1>
+      <p class="sub">Atividade para a sala de informática — com galeria de estudo e um quiz com 3 perguntas por animal.
+        <button class="secondary" style="margin-left:10px" onclick="window.print()">🖨️ Imprimir/Salvar em PDF</button>
+      </p>
+      <nav>
+        <button onclick="show('estudo')">1) Explorar animais</button>
+        <button class="secondary" onclick="show('quiz')">2) Quiz</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- 1) EXPLORAR ANIMAIS -->
+    <section id="estudo" class="section active">
+      <h2>📚 Explorar: foto, habitat, hábitos e alimentação</h2>
+      <div id="cards" class="grid"></div>
+    </section>
+
+    <!-- 2) QUIZ -->
+    <section id="quiz" class="section">
+      <div class="quiz">
+        <h2>🧠 Quiz interativo</h2>
+        <p class="sub">São 3 perguntas sobre <strong>cada animal</strong>. Clique na resposta e avance. Boa sorte!</p>
+        <div class="bar" style="margin:10px 0 16px"><div id="progress"></div></div>
+        <div id="qBox" class="q-card"></div>
+        <div style="display:flex; gap:10px; margin-top:12px">
+          <button id="nextBtn">Próxima</button>
+          <button class="secondary" id="retryBtn" style="display:none">Refazer quiz</button>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p>Imagens: <em>Wikimedia Commons</em> (licenças abertas). Recurso educativo para uso pedagógico. Você pode salvar esta página e abrir offline na sala de informática.</p>
+    </footer>
+  </main>
+
+  <script>
+    // ======== DADOS ========
+    const animais = [
+      // --- Originais ---
+      {
+        id: 'arara',
+        nome: 'Arara-azul',
+        img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Hyacinth_Macaw.jpg',
+        habitat: 'Florestas e áreas abertas do Pantanal e Cerrado.',
+        alimentacao: 'Frutas, sementes e castanhas (como o licuri).',
+        habitos: 'Diurna, costuma voar em bandos e é muito barulhenta.',
+        curiosidade: 'É a maior arara do mundo e está ameaçada de extinção.'
+      },
+      {
+        id: 'beija',
+        nome: 'Beija-flor',
+        img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Beija-flor.jpg',
+        habitat: 'Jardins, praças e florestas das Américas.',
+        alimentacao: 'Néctar de flores e pequenos insetos.',
+        habitos: 'Diurno; bate as asas muito rápido e pode ficar parado no ar.',
+        curiosidade: 'Ajuda a polinizar plantas ao levar pólen de flor em flor.'
+      },
+      {
+        id: 'coruja',
+        nome: 'Coruja (Tyto alba)',
+        img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flickr_-_Rainbirder_-_Barn_Owl_(Tyto_alba).jpg',
+        habitat: 'Campos e áreas rurais; também perto de cidades.',
+        alimentacao: 'Roedores, pequenos mamíferos e insetos.',
+        habitos: 'Principalmente noturna, voo silencioso para caçar.',
+        curiosidade: 'Suas penas especiais reduzem o ruído do voo.'
+      },
+      {
+        id: 'harpia',
+        nome: 'Águia-harpia (Harpia harpyja)',
+        img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Harpia_harpyja.jpg',
+        habitat: 'Florestas tropicais da América, como a Amazônia.',
+        alimentacao: 'Ave de rapina: caça mamíferos e outras aves.',
+        habitos: 'Diurna; voa alto e observa do topo das árvores.',
+        curiosidade: 'Tem garras muito fortes, entre as maiores entre as aves.'
+      },
+      {
+        id: 'borboleta',
+        nome: 'Borboleta',
+        img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Butterfly_-_Borboleta_-_Parque_das_aves_-_Foz_do_Iguacu_-_Brasil_(23649560274).jpg',
+        habitat: 'Jardins, parques e florestas.',
+        alimentacao: 'Néctar das flores (na fase adulta).',
+        habitos: 'Ativa durante o dia; passa pela metamorfose.',
+        curiosidade: 'Seu ciclo de vida: ovo → lagarta → pupa → adulto.'
+      },
+      {
+        id: 'morcego',
+        nome: 'Morcego frugívoro',
+        img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Um_morcego_frug%C3%ADvero_(imagem_ampliada).jpg',
+        habitat: 'Cavernas, ocos de árvores e telhados.',
+        alimentacao: 'Frutas e néctar (há espécies que comem insetos).',
+        habitos: 'Noturno; usa a ecolocalização para se orientar.',
+        curiosidade: 'É o único mamífero capaz de voar ativamente.'
+      },
+      // --- Novos exemplos ---
+      {
+        id: 'andorinha',
+        nome: 'Andorinha-das-chaminés (Hirundo rustica)',
+        img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Andorinha-das-chamin%C3%A9s_(Hirundo_rustica)_(51181855850).jpg',
+        habitat: 'Áreas abertas, fazendas, vilas e cidades.',
+        alimentacao: 'Insetos capturados em voo.',
+        habitos: 'Diurna e migratória; voa em grupos e faz ninhos em construções.',
+        curiosidade: 'Suas asas longas e cauda em forma de “V” ajudam em manobras rápidas.'
+      },
+      {
+        id: 'tucano',
+        nome: 'Tucano-toco (Ramphastos toco)',
+        img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Tucano%20-%20Toco.JPG',
+        habitat: 'Bordas de florestas e áreas abertas da América do Sul.',
+        alimentacao: 'Frutas, ovos e pequenos animais.',
+        habitos: 'Diurno; o bico grande ajuda a alcançar frutos e a regular a temperatura.',
+        curiosidade: 'Apesar do bico enorme, é leve por dentro (cheio de “cavidades”).'
+      },
+      {
+        id: 'gaivota',
+        nome: 'Gaivota (Larus dominicanus)',
+        img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Larus_dominicanus_001.jpg',
+        habitat: 'Costas, praias, ilhas e portos.',
+        alimentacao: 'Peixes, restos de comida e outros animais pequenos.',
+        habitos: 'Diurna; plana sobre o mar e é muito oportunista.',
+        curiosidade: 'É comum em diversas cidades litorâneas do Brasil.'
+      },
+      {
+        id: 'abelha',
+        nome: 'Abelha (Apis mellifera)',
+        img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Apis_mellifera_Western_honey_bee.jpg',
+        habitat: 'Colmeias em troncos, cavidades ou caixas de apicultura.',
+        alimentacao: 'Néctar e pólen das flores.',
+        habitos: 'Diurna e social; usa “danças” para indicar fontes de alimento.',
+        curiosidade: 'É importante polinizadora para muitas plantas e alimentos.'
+      },
+      {
+        id: 'libelula',
+        nome: 'Libélula',
+        img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Lib%C3%A9lula.jpg',
+        habitat: 'Locais próximos a lagos, rios e brejos.',
+        alimentacao: 'Insetos (como mosquitos), que captura em pleno voo.',
+        habitos: 'Diurna; excelente voadora. As larvas vivem na água.',
+        curiosidade: 'Tem olhos grandes que enxergam quase em todas as direções.'
+      },
+      {
+        id: 'pomba',
+        nome: 'Pomba-doméstica (Columba livia)',
+        img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Columba_livia.jpg',
+        habitat: 'Cidades, praças e telhados.',
+        alimentacao: 'Sementes e restos de alimento humano.',
+        habitos: 'Diurna; costuma viver em grupos e construir ninhos em prédios.',
+        curiosidade: 'Tem ótima orientação e retorna ao ninho mesmo a longas distâncias.'
+      },
+      {
+        id: 'garca',
+        nome: 'Garça-branca-grande (Ardea alba)',
+        img: 'https://commons.wikimedia.org/wiki/Special:FilePath/The_great_egret_(Ardea_alba).jpg',
+        habitat: 'Manguezais, lagoas, banhados e margens de rios.',
+        alimentacao: 'Peixes, anfíbios e pequenos invertebrados.',
+        habitos: 'Fica parada e “fisga” a presa rapidamente com o bico.',
+        curiosidade: 'Suas penas brancas ajudam na camuflagem em ambientes alagados.'
+      },
+      {
+        id: 'gaviao',
+        nome: 'Gavião-carijó (Rupornis magnirostris)',
+        img: 'https://commons.wikimedia.org/wiki/Special:FilePath/GAVI%C3%83O-CARIJ%C3%93_(Rupornis_magnirostris).jpg',
+        habitat: 'Áreas urbanas e rurais, parques e campos.',
+        alimentacao: 'Pequenos mamíferos, aves e répteis.',
+        habitos: 'Diurno; frequentemente visto pousado em postes e árvores.',
+        curiosidade: 'É um dos gaviões mais comuns em cidades brasileiras.'
+      },
+      {
+        id: 'falcao',
+        nome: 'Falcão-peregrino (Falco peregrinus)',
+        img: 'https://commons.wikimedia.org/wiki/Special:FilePath/Falco_peregrinus_-_01.jpg',
+        habitat: 'Falésias, montanhas e prédios altos nas cidades.',
+        alimentacao: 'Principalmente outras aves, capturadas em voo.',
+        habitos: 'Diurno; famoso por mergulhos muito rápidos para caçar.',
+        curiosidade: 'É um dos animais mais velozes do planeta em voo em mergulho.'
+      }
+    ];
+
+    // ======== UI ========
+    function show(section){
+      document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+      document.getElementById(section).classList.add('active');
+      if(section==='estudo'){ renderCards(); }
+      if(section==='quiz'){ startQuiz(); }
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    // ======== EXPLORAR ========
+    function renderCards(){
+      const el = document.getElementById('cards');
+      if(el.dataset.filled) return; // render uma vez
+      el.dataset.filled = '1';
+      el.innerHTML = animais.map(a => `
+        <article class="card">
+          <img class="img" src="${a.img}" alt="${a.nome}"/>
+          <h3>${a.nome}</h3>
+          <p><strong>Habitat:</strong> ${a.habitat}</p>
+          <p><strong>Alimentação:</strong> ${a.alimentacao}</p>
+          <p><strong>Hábitos:</strong> ${a.habitos}</p>
+          <p style="color:var(--muted)"><em>${a.curiosidade}</em></p>
+        </article>
+      `).join('');
+    }
+
+    // ======== QUIZ ========
+    const perguntas = [
+      // Arara-azul
+      {a:'arara', img:true, q:'Onde vive, principalmente, a arara-azul?', opts:['No fundo do mar','Em cavernas escuras','Em florestas e áreas como o Pantanal'], c:2, e:'A arara-azul vive em ambientes como o Pantanal e o Cerrado.'},
+      {a:'arara', img:true, q:'O que a arara-azul costuma comer?', opts:['Peixes','Sementes, frutas e castanhas','Leite'], c:1, e:'A dieta é rica em sementes e frutos, como o coquinho de licuri.'},
+      {a:'arara', img:true, q:'Sobre o comportamento da arara-azul:', opts:['É noturna e silenciosa','É diurna e costuma voar em bando','Não voa'], c:1, e:'A arara-azul é diurna e sociável.'},
+      // Beija-flor
+      {a:'beija', img:true, q:'O beija-flor se alimenta principalmente de…', opts:['Néctar e pequenos insetos','Folhas das árvores','Pedrinhas'], c:0, e:'O néctar fornece energia; ele também come pequenos insetos.'},
+      {a:'beija', img:true, q:'O bico comprido do beija-flor ajuda a…', opts:['Cavar buracos no chão','Cortar frutos duros','Alcançar o néctar das flores'], c:2, e:'O bico fino alcança o néctar no fundo das flores.'},
+      {a:'beija', img:true, q:'O beija-flor ajuda as plantas porque…', opts:['Produz sementes sozinho','Espanta a chuva','Transporta pólen (polinização)'], c:2, e:'Ao visitar flores, ele leva pólen e ajuda na polinização.'},
+      // Coruja
+      {a:'coruja', img:true, q:'A coruja (Tyto alba) é, em geral…', opts:['Diurna','Noturna','Aquática'], c:1, e:'Corujas caçam à noite e têm voo silencioso.'},
+      {a:'coruja', img:true, q:'A alimentação da coruja inclui…', opts:['Roedores e insetos','Algas marinhas','Seiva de árvores'], c:0, e:'Ela caça pequenos mamíferos e insetos.'},
+      {a:'coruja', img:true, q:'Uma característica do voo das corujas é…', opts:['Ser muito barulhento','Ser silencioso','Não voam'], c:1, e:'As penas especiais tornam o voo silencioso.'},
+      // Harpia
+      {a:'harpia', img:true, q:'A harpia vive principalmente em…', opts:['Florestas tropicais','Desertos gelados','Fundo do mar'], c:0, e:'A harpia é típica de florestas como a Amazônia.'},
+      {a:'harpia', img:true, q:'A harpia é uma ave de rapina. Isso quer dizer que ela…', opts:['Se alimenta de carne (caça)','Só bebe néctar','Não come'], c:0, e:'A harpia caça outros animais para se alimentar.'},
+      {a:'harpia', img:true, q:'As garras da harpia são…', opts:['Fracas e curtas','Muito fortes','Inexistentes'], c:1, e:'Suas garras são enormes e muito fortes para segurar a presa.'},
+      // Borboleta
+      {a:'borboleta', img:true, q:'A borboleta adulta se alimenta de…', opts:['Néctar','Leite','Pedras'], c:0, e:'Borboletas adultas costumam sugar o néctar das flores.'},
+      {a:'borboleta', img:true, q:'Qual é a sequência correta da metamorfose?', opts:['Lagarta → pupa → ovo → adulto','Ovo → lagarta → pupa → adulto','Adulto → ovo → pupa → lagarta'], c:1, e:'O ciclo é: ovo, lagarta, pupa (crisálida) e adulto.'},
+      {a:'borboleta', img:true, q:'As cores nas asas ajudam a…', opts:['Afastar predadores e camuflar','Produzir comida','Fazer barulho'], c:0, e:'Cores podem enganar predadores e também camuflar.'},
+      // Morcego
+      {a:'morcego', img:true, q:'O morcego é o único mamífero que…', opts:['Nada como peixe','Voa ativamente','Troca de pele como cobra'], c:1, e:'Morcegos são mamíferos e voam de verdade.'},
+      {a:'morcego', img:true, q:'Morcegos frugívoros se alimentam de…', opts:['Frutas e néctar','Apenas folhas','Somente água'], c:0, e:'Frugívoros comem frutos; há espécies insetívoras também.'},
+      {a:'morcego', img:true, q:'Como o morcego se orienta à noite?', opts:['Com ecolocalização','Usando lanternas','Não enxerga nada'], c:0, e:'Ele emite sons e “ouve” o eco para se guiar.'},
+      // Andorinha
+      {a:'andorinha', img:true, q:'A andorinha-das-chaminés se alimenta principalmente de…', opts:['Insetos capturados em voo','Folhas','Sementes duras'], c:0, e:'Ela caça moscas, mosquitos e outros insetos em pleno voo.'},
+      {a:'andorinha', img:true, q:'Sobre seus hábitos, a andorinha é…', opts:['Noturna','Diurna e migratória','Aquática'], c:1, e:'É diurna e faz longas migrações entre estações.'},
+      {a:'andorinha', img:true, q:'Onde costuma fazer ninho?', opts:['Em cavernas submarinas','Em construções e beirais','Apenas no chão'], c:1, e:'Usa estruturas humanas como beirais e galpões.'},
+      // Tucano
+      {a:'tucano', img:true, q:'O grande bico do tucano-toco ajuda a…', opts:['Voar mais rápido','Alcançar frutos e regular a temperatura','Cavar túneis'], c:1, e:'O bico é útil para alcançar frutos e trocar calor.'},
+      {a:'tucano', img:true, q:'A alimentação do tucano-toco é…', opts:['Somente peixes','Apenas folhas','Frutas e, às vezes, ovos e pequenos animais'], c:2, e:'É principalmente frugívoro, mas pode complementar com proteína animal.'},
+      {a:'tucano', img:true, q:'Seu habitat típico é…', opts:['Bordas de florestas e áreas abertas','Desertos de gelo','Apenas alto-mar'], c:0, e:'É comum em bordas de mata e áreas abertas.'},
+      // Gaivota
+      {a:'gaivota', img:true, q:'A gaivota (Larus dominicanus) vive principalmente em…', opts:['Cidades no deserto','Costas, praias e portos','Florestas densas longe do mar'], c:1, e:'Ela é comum no litoral e em áreas portuárias.'},
+      {a:'gaivota', img:true, q:'Sua alimentação é…', opts:['Somente néctar','Onívora (peixes e restos)','Apenas folhas'], c:1, e:'Come peixes e também restos de alimentos humanos.'},
+      {a:'gaivota', img:true, q:'Um comportamento comum das gaivotas é…', opts:['Planar sobre o mar','Hibernar no fundo do mar','Viver em cavernas'], c:0, e:'Elas planam e aproveitam o vento sobre as ondas.'},
+      // Abelha
+      {a:'abelha', img:true, q:'As abelhas (Apis mellifera) se alimentam de…', opts:['Néctar e pólen','Carne crua','Pedras'], c:0, e:'Elas coletam néctar e pólen nas flores.'},
+      {a:'abelha', img:true, q:'As abelhas são animais…', opts:['Solitários sempre','Sociais, vivem em colmeias','Que não voam'], c:1, e:'Vivem em sociedades organizadas com rainha, operárias e zangões.'},
+      {a:'abelha', img:true, q:'Como indicam fontes de alimento às outras abelhas?', opts:['Por “danças”','Por latidos','Por desenhos'], c:0, e:'A abelha faz movimentos que indicam direção e distância.'},
+      // Libélula
+      {a:'libelula', img:true, q:'As libélulas são ótimas…', opts:['Corredoras','Voadoras','Escavadoras'], c:1, e:'Elas capturam outros insetos em voo com muita agilidade.'},
+      {a:'libelula', img:true, q:'As larvas (ninfas) das libélulas vivem…', opts:['Na água','No alto das árvores','No deserto de areia'], c:0, e:'A fase jovem é aquática, em brejos e lagos.'},
+      {a:'libelula', img:true, q:'Onde é mais fácil ver libélulas?', opts:['Perto de rios e lagoas','No fundo do mar','Em geleiras'], c:0, e:'Ambientes de água doce atraem libélulas.'},
+      // Pomba
+      {a:'pomba', img:true, q:'A pomba-doméstica é comum em…', opts:['Praças e prédios das cidades','Somente florestas intocadas','Apenas desertos'], c:0, e:'É muito adaptada ao ambiente urbano.'},
+      {a:'pomba', img:true, q:'Sua alimentação inclui…', opts:['Sementes e restos de comida','Somente carne','Apenas néctar'], c:0, e:'Come grãos e restos deixados por humanos.'},
+      {a:'pomba', img:true, q:'O grupo das pombas costuma…', opts:['Viver isolado','Viver em bandos','Viver apenas debaixo d’água'], c:1, e:'Costumam formar bandos e fazer ninhos em construções.'},
+      // Garça-branca
+      {a:'garca', img:true, q:'A garça-branca-grande costuma caçar…', opts:['Peixes em áreas alagadas','Apenas folhas','Pedras brilhantes'], c:0, e:'Fica parada e pesca peixes e outros animais aquáticos.'},
+      {a:'garca', img:true, q:'Seu habitat é…', opts:['Manguezais, lagoas e margens de rios','Desertos gelados','Interior de cavernas secas'], c:0, e:'Vive em ambientes aquáticos.'},
+      {a:'garca', img:true, q:'Um comportamento típico é…', opts:['Martelar troncos','Permanecer imóvel esperando a presa','Cavar túneis'], c:1, e:'Espera o momento certo para atacar com o bico.'},
+      // Gavião-carijó
+      {a:'gaviao', img:true, q:'O gavião-carijó é comum…', opts:['Em cidades e áreas rurais','Apenas no Ártico','Somente em alto-mar'], c:0, e:'É adaptado a ambientes urbanos e rurais.'},
+      {a:'gaviao', img:true, q:'Ele se alimenta de…', opts:['Pequenos vertebrados','Somente néctar','Apenas algas'], c:0, e:'Caça aves, roedores e répteis.'},
+      {a:'gaviao', img:true, q:'Geralmente é visto…', opts:['Pousado em postes e árvores','Varrendo o chão com o bico','Dormindo debaixo d’água'], c:0, e:'Costuma observar do alto antes de voar para caçar.'},
+      // Falcão-peregrino
+      {a:'falcao', img:true, q:'O falcão-peregrino é famoso por…', opts:['Ser o mais pesado','Ser muito lento','Ser extremamente veloz em mergulho'], c:2, e:'Seus mergulhos podem superar 300 km/h.'},
+      {a:'falcao', img:true, q:'Sua alimentação principal é…', opts:['Frutas','Outras aves em voo','Somente folhas'], c:1, e:'Caça aves no ar com grande habilidade.'},
+      {a:'falcao', img:true, q:'Onde pode viver?', opts:['Somente dentro d’água','Falésias e até prédios altos','Apenas em cavernas escuras'], c:1, e:'Também se adapta a cidades, usando prédios como “falésias”.'}
+    ];
+
+    let order = []; let index = 0; let score = 0; let locked = false;
+    const qBox = document.getElementById('qBox');
+    const progress = document.getElementById('progress');
+
+    function startQuiz(){
+      order = [...perguntas.keys()];
+      index = 0; score = 0; locked = false;
+      document.getElementById('retryBtn').style.display = 'none';
+      document.getElementById('nextBtn').style.display = 'inline-block';
+      renderQuestion();
+    }
+
+    function renderQuestion(){
+      const p = perguntas[order[index]]; const animal = animais.find(a => a.id===p.a);
+      progress.style.width = `${(index/perguntas.length)*100}%`;
+      qBox.innerHTML = `
+        <div style="display:flex; gap:14px; align-items:flex-start; flex-wrap:wrap">
+          <img src="${animal.img}" alt="${animal.nome}" style="width:180px; height:135px; object-fit:cover; border-radius:10px; border:1px solid #e5e7eb"/>
+          <div style="flex:1">
+            <div class="q-title"><strong>${animal.nome}</strong> — ${p.q}</div>
+            <div class="choices">${p.opts.map((o,i)=>`<div class=\"choice\" data-i=\"${i}\">${String.fromCharCode(65+i)}) ${o}</div>`).join('')}</div>
+            <div id="feedback" class="feedback"></div>
+          </div>
+        </div>
+      `;
+      qBox.querySelectorAll('.choice').forEach(el=>{
+        el.onclick = ()=>{
+          if(locked) return; locked = true;
+          const i = +el.dataset.i;
+          const ok = i===p.c; if(ok) score++;
+          qBox.querySelectorAll('.choice').forEach((c,idx)=>{
+            c.classList.add(idx===p.c? 'correct':'wrong');
+          });
+          document.getElementById('feedback').textContent = ok ? '✅ Resposta certa!' : '❌ Tente observar melhor na explicação.';
+          const exp = document.createElement('div'); exp.style.marginTop = '6px'; exp.style.color = 'var(--muted)'; exp.textContent = 'Explicação: ' + p.e; qBox.appendChild(exp);
+        };
+      });
+    }
+
+    document.getElementById('nextBtn').onclick = ()=>{
+      if(!locked) { alert('Escolha uma alternativa antes de avançar.'); return; }
+      index++; locked = false;
+      if(index < perguntas.length){ renderQuestion(); }
+      else { finishQuiz(); }
+    };
+
+    document.getElementById('retryBtn').onclick = startQuiz;
+
+    function finishQuiz(){
+      progress.style.width = '100%';
+      const pct = Math.round((score/perguntas.length)*100);
+      qBox.innerHTML = `
+        <div class="q-card" style="text-align:center">
+          <h3>🥳 Você terminou o quiz!</h3>
+          <p><strong>Pontuação:</strong> ${score} de ${perguntas.length} (${pct}%).</p>
+          <p>Se quiser, volte à seção “Explorar” para rever as informações e <strong>refaça</strong> o quiz.</p>
+        </div>
+      `;
+      document.getElementById('nextBtn').style.display = 'none';
+      document.getElementById('retryBtn').style.display = 'inline-block';
+    }
+
+    // inicializa cards ao carregar
+    renderCards();
+  </script>
+</body>
+</html>
